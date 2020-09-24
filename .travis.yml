@@ -1,0 +1,12 @@
+# need a copy of docker running
+language: generic
+sudo: required
+services:
+    - docker
+# build the image using Dockerfile.dev
+before_install:
+    - docker build -t andreas/docker-react -f ./frontend/Dockerfile.dev frontend
+# Tell travis how to run the test suite
+script:
+    - docker run -e CI=true andreas/docker-react npm run test
+# Tell travis how to deploy the code to AWS
