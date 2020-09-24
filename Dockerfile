@@ -1,12 +1,12 @@
 # base image and tag
-FROM node:alpine as builder
+FROM node:alpine
 
 # no need to use volumes as production envs
 # assume no code changes
 WORKDIR '/app'
-COPY package.json .
+COPY /frontend/package*.json ./
 RUN npm install
-COPY . .
+COPY frontend .
 
 # production code will be located in
 # /app/build
@@ -14,5 +14,7 @@ RUN npm run build
 
 # Second phase
 FROM nginx
+# Open nginx default port
+EXPOSE 80
 # copy from tagged stage to destination (nginx specific here)
-COPY --from=builder /app/build /usr/share/nginx/html
+COPY --from=0 /app/build /usr/share/nginx/html
